@@ -28,8 +28,8 @@ venv/
 # === Environment variables ===
 .env
 
-# === Your raw data files ===
-data/*.csv
+# Ignore all CSV files in the project
+*.csv
 
 # === Compiled files or binaries ===
 *.so
