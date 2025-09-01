@@ -1,13 +1,14 @@
 # pyFMgr: Personal Finance Manager
 
-pyFMgr is a Python-based personal finance manager designed to help you track, analyze, and manage your financial transactions. It supports importing bank statements, categorizing transactions, and provides a web dashboard for easy visualization and management.
+pyFMgr is a Python-based personal finance manager I built specifically for my own financial needs. It helps me track, analyze, and manage my transactions, supporting single-entry or bulk imports from my bank and credit card statements. I can categorize and edit transactions and view everything through a web dashboard for easy visualization.
 
 ## Features
-- Import bank and Chase statements (CSV)
-- Store transactions in a SQLite database
-- Categorize and group transactions
+- Import bank and credit card statements (CSV)
+- Store transactions in a local SQLite database
+- Categorize and group transactions for better insights
 - Web dashboard for viewing, adding, and editing transactions
 - Data visualization and summary reports
+- Fully tailored for my personal finance workflow
 
 ## Project Structure
 ```
