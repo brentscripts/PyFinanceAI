@@ -1,0 +1,15 @@
+services:
+  pyfmgr:
+    build:
+      context: .
+      args:
+        REQUIREMENTS: requirements.txt  # Change to requirements-dev.txt or requirements.txt for production
+    image: pyfmgr:latest
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./finance.db:/app/finance.db
+      - ./.env:/app/.env
+    environment:
+      FLASK_ENV: production
+    restart: unless-stopped

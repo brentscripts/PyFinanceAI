@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.db
+*.csv
+*.log
+*.tmp
+*.bak
+.env
+.ipynb_checkpoints/
+data/
+grouped_output.csv
+income_giving.ipynb
+webapp/tests/
