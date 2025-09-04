@@ -3,13 +3,23 @@ services:
     build:
       context: .
       args:
-        REQUIREMENTS: requirements.txt  # Change to requirements-dev.txt or requirements.txt for production
+        REQUIREMENTS: requirements.txt  # Swap with requirements-dev.txt for dev mode
     image: pyfmgr:latest
     ports:
       - "5000:5000"
     volumes:
-      - ./finance.db:/app/finance.db
-      - ./.env:/app/.env
+      - finance_data:/app/finance.db         # Named volume for persistence
+      - ./.env:/app/.env                     # Mounting your env file
+    env_file:
+      - .env                                 # Load environment variables cleanly
     environment:
       FLASK_ENV: production
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  finance_data:
