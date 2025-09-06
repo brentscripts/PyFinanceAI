@@ -32,13 +32,14 @@ pyFMgr is a Python-based personal finance manager I built specifically for my ow
 ├── finance.db             # SQLite database file
 ```
 
+
 ## Getting Started
 
 ### Prerequisites
-- Python 3.8+
-- pip
+- Python 3.8+ and pip (for local development)
+- Docker and Docker Compose (for containerized deployment)
 
-### Installation
+### Local Installation
 1. Clone the repository:
    ```pwsh
    git clone <repo-url>
@@ -53,6 +54,29 @@ pyFMgr is a Python-based personal finance manager I built specifically for my ow
    python init_db.py
    ```
 
+### Docker Deployment
+1. Build and start the app with Docker Compose:
+   ```pwsh
+   docker-compose up -d --build
+   ```
+   This will:
+   - Build the Docker image
+   - Start the app on [http://localhost:5000](http://localhost:5000)
+   - Persist your data in a Docker-managed volume (`finance_data`)
+   - Load environment variables from your `.env` file
+
+2. To stop the app:
+   ```pwsh
+   docker-compose down
+   ```
+
+3. To run with development dependencies:
+   Edit `docker-compose.yml` and set:
+   ```yaml
+   args:
+     REQUIREMENTS: requirements-dev.txt
+   ```
+
 ### Usage
 #### Import Transactions
 Run the main script to import transactions:
@@ -60,7 +84,7 @@ Run the main script to import transactions:
 python main.py
 ```
 
-#### Start the Web Dashboard
+#### Start the Web Dashboard (Locally)
 ```pwsh
 python webapp/app.py
 ```

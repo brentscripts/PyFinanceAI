@@ -8,12 +8,13 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - finance_data:/app/finance.db         # Named volume for persistence
+      - ./:/app                        # Mount your entire project root
       - ./.env:/app/.env                     # Mounting your env file
     env_file:
       - .env                                 # Load environment variables cleanly
     environment:
       FLASK_ENV: production
+      DATABASE: /app/finance.db         # Ensure app uses correct DB path
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000"]
