@@ -263,7 +263,7 @@ def expenses_by_category():
         data = conn.execute("""
             SELECT category, ABS(SUM(amount)) AS total
             FROM transactions
-            WHERE amount < 0
+            WHERE amount < 0 AND category <> 'Transfer'
             GROUP BY category
             ORDER BY total DESC
         """).fetchall()
