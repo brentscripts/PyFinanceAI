@@ -1,7 +1,11 @@
+import os
 import sys
+from dotenv import load_dotenv
 from importers.bank import BankCSVImporter
 from importers.chase import ChaseCSVImporter
 from database.db import FinanceDatabase
+
+load_dotenv()
 
 def load_csv(filepath, source):
     if source == 'bank':
@@ -13,7 +17,8 @@ def load_csv(filepath, source):
 
     transactions = importer.parse(filepath)
 
-    db = FinanceDatabase('finance.db')
+    db_path = os.environ.get("DATABASE", "finance.db")
+    db = FinanceDatabase(db_path)
     db.insert_transactions(transactions)
     print(f"Inserted {len(transactions)} transactions from {source}.")
 
