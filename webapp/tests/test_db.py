@@ -5,25 +5,10 @@ from database.db import FinanceDatabase
 
 class TestFinanceDatabase(unittest.TestCase):
     def setUp(self):
-        # Use an in-memory SQLite database for testing
+        # Use an in-memory SQLite database for testing.
+        # FinanceDatabase's constructor already creates the transactions
+        # table via _create_tables_if_not_exists(), so no need to redo it here.
         self.db = FinanceDatabase(':memory:')
-        self.db.cursor.execute('''
-            CREATE TABLE transactions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT,
-                post_date TEXT,
-                description TEXT,
-                original_description TEXT,
-                category TEXT,
-                amount REAL,
-                type TEXT,
-                account TEXT,
-                source TEXT,
-                tags TEXT,
-                memo TEXT
-            )
-        ''')
-        self.db.conn.commit()
 
     def tearDown(self):
         self.db.close()

@@ -1,26 +1,30 @@
-# Use official Python image
-
-FROM python:3.13.7-alpine3.21
+# Pinned to match local dev (see README) so behavior is consistent across environments.
+FROM python:3.12-alpine
 
 WORKDIR /app
 
-# Allow switching requirements file via build arg
-ARG REQUIREMENTS=requirements.txt
-COPY requirements.txt requirements-dev.txt ./
+# curl is needed for the healthcheck in docker-compose.yml; alpine doesn't ship it.
+RUN apk add --no-cache curl
 
-# Select requirements file via build arg (default: requirements.txt)
-ARG REQUIREMENTS=requirements.txt
-RUN pip install --no-cache-dir -r $REQUIREMENTS
+# Copy only what's needed to resolve dependencies first, so this layer is
+# cached and doesn't rebuild just because application code changed.
+COPY pyproject.toml ./
 
-# Copy only necessary files
+# Copy source before installing, since pyproject.toml declares real packages
+# (database, importers, webapp) that setuptools needs present at install time.
 COPY webapp/ webapp/
 COPY database/ database/
 COPY importers/ importers/
-COPY main.py init_db.py schema.sql ./
-COPY webapp/templates/ webapp/templates/
-COPY webapp/static/ webapp/static/
+COPY main.py init_db.py schema.sql __init__.py ./
 
-# Set environment variables
+# Toggle to "true" to also install dev/test dependencies (pytest, etc.)
+ARG DEV_INSTALL=false
+RUN if [ "$DEV_INSTALL" = "true" ]; then \
+      pip install --no-cache-dir -e ".[dev]"; \
+    else \
+      pip install --no-cache-dir -e .; \
+    fi
+
 ENV FLASK_APP=webapp/app.py
 ENV FLASK_ENV=production
 
