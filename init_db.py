@@ -1,6 +1,7 @@
 import os
-import sqlite3
 from dotenv import load_dotenv
+
+from database.db import FinanceDatabase
 
 load_dotenv()
 
@@ -11,17 +12,14 @@ def create_database():
     if parent_dir:
         os.makedirs(parent_dir, exist_ok=True)
 
-    schema_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schema.sql")
-    with open(schema_path, "r") as f:
-        schema = f.read()
-
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.executescript(schema)
-
-    conn.commit()
-    conn.close()
-    print(f"✅ Database and tables created from schema.sql at {db_path}.")
+    # FinanceDatabase's constructor creates any missing tables from
+    # schema.sql and backfills any columns added to an existing table since
+    # (see database/db.py). This is the same path webapp/app.py and the
+    # importers use, so there's exactly one place responsible for the
+    # database's shape.
+    db = FinanceDatabase(db_path)
+    db.close()
+    print(f"✅ Database and tables created/upgraded at {db_path}.")
 
 if __name__ == "__main__":
     create_database()
