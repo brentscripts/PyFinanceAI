@@ -11,7 +11,8 @@ def create_database():
     if parent_dir:
         os.makedirs(parent_dir, exist_ok=True)
 
-    with open("schema.sql", "r") as f:
+    schema_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schema.sql")
+    with open(schema_path, "r") as f:
         schema = f.read()
 
     conn = sqlite3.connect(db_path)

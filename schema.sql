@@ -1,4 +1,4 @@
-CREATE TABLE transactions (
+CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date TEXT NOT NULL,
     post_date TEXT,

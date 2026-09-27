@@ -1,5 +1,14 @@
+import os
 import sqlite3
 from typing import List, Tuple
+
+# schema.sql lives at the project root; this file lives in database/, so walk
+# up one level. Resolved from this file's location (not cwd) so it works the
+# same whether FinanceDatabase is instantiated from webapp/app.py, a script,
+# or a test — schema.sql is the single source of truth for the table shape.
+SCHEMA_PATH = os.path.normpath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "schema.sql")
+)
 
 class FinanceDatabase:
     def __init__(self, db_path="finance.db"):
@@ -8,23 +17,10 @@ class FinanceDatabase:
         self._create_tables_if_not_exists()
 
     def _create_tables_if_not_exists(self):
-        """Create the transactions table if it doesn't already exist."""
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS transactions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT,
-            post_date TEXT,
-            description TEXT,
-            original_description TEXT,
-            category TEXT,
-            amount REAL,
-            type TEXT,
-            account TEXT,
-            source TEXT,
-            tags TEXT,
-            memo TEXT
-        )
-        """)
+        """Create tables from schema.sql if they don't already exist."""
+        with open(SCHEMA_PATH, "r") as f:
+            schema = f.read()
+        self.cursor.executescript(schema)
         self.conn.commit()
         
     def insert_transactions(self, transactions):
