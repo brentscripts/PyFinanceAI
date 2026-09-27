@@ -6,6 +6,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/..'))
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_wtf.csrf import generate_csrf
+from flask_login import login_required
 import sqlite3
 import io
 import csv
@@ -14,6 +15,7 @@ from datetime import datetime
 from importers.bank import BankCSVImporter
 from importers.chase import ChaseCSVImporter
 from database.db import FinanceDatabase
+from webapp.auth import auth_bp, login_manager
 
 # === Load environment variables ===
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
@@ -24,6 +26,14 @@ app.config['DATABASE'] = os.environ['DATABASE']
 
 # Enable CSRF protection
 csrf = CSRFProtect(app)
+
+# === Auth: household login, shared data behind it ===
+# One login per household member; everyone who logs in sees the same
+# shared transactions table (see webapp/auth.py for why User carries no
+# per-row scoping). Registered before the routes below so login_required
+# is available to decorate them.
+app.register_blueprint(auth_bp)
+login_manager.init_app(app)
 
 @app.context_processor
 def inject_csrf_token():
@@ -70,6 +80,7 @@ def get_db_connection():
 
 # === Home/index route with pagination, sorting, filtering ===
 @app.route('/')
+@login_required
 def index():
     try:
         # Get query parameters
@@ -129,6 +140,7 @@ def index():
 
 # === Add route for single or bulk transactions ===
 @app.route('/add', methods=('GET', 'POST'))
+@login_required
 def add():
     message = None
     if request.method == 'POST':
@@ -197,6 +209,7 @@ def add():
 
 # === Delete route ===
 @app.route('/delete/<int:id>', methods=['POST'])
+@login_required
 def delete(id):
     try:
         conn = get_db_connection()
@@ -216,6 +229,7 @@ def delete(id):
 
 # === Inline update route for AJAX ===
 @app.route('/update/<int:id>', methods=['POST'])
+@login_required
 def update(id):
     try:
         data = request.get_json()
@@ -252,11 +266,13 @@ def handle_csrf_error(e):
 
 # === Dashboard for Charts ===
 @app.route('/dashboard')
+@login_required
 def dashboard():
     return render_template('dashboard.html')
 
 # === Serve JSON for Chart.js ===
 @app.route('/api/expenses_by_category')
+@login_required
 def expenses_by_category():
     try:
         conn = get_db_connection()
@@ -276,6 +292,7 @@ def expenses_by_category():
 
 
 @app.route('/api/monthly_cash_flow')
+@login_required
 def monthly_cash_flow():
     try:
         conn = get_db_connection()
@@ -296,6 +313,7 @@ def monthly_cash_flow():
         return jsonify({'error': 'Internal Server Error'}), 500
 
 @app.route('/api/income_vs_expenses')
+@login_required
 def income_vs_expenses():
     try:
         conn = get_db_connection()
@@ -317,6 +335,7 @@ def income_vs_expenses():
         return jsonify({'error': 'Internal Server Error'}), 500
 
 @app.route('/api/donations_vs_income')
+@login_required
 def donations_vs_income():
     try:
         conn = get_db_connection()

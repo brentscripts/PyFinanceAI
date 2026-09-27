@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>pyFMgr</h1>
+    <p>Sign in with your household account.</p>
+
+    {% if error %}
+    <p style="color:#b00020; font-weight:bold;">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required autofocus maxlength="150">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required maxlength="200">
+
+        <button type="submit" class="btn btn-primary">Sign In</button>
+    </form>
+</body>
+</html>

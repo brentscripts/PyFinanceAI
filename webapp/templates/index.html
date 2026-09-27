@@ -10,6 +10,14 @@
     <h1>Transactions</h1>
 
     <div class="top-bar">
+        Logged in as <strong>{{ current_user.username }}</strong>
+        · <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <div class="top-bar">
         <a href="{{ url_for('add') }}">➕ Add New Transaction</a>
     </div>
 

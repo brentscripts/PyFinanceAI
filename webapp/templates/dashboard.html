@@ -8,7 +8,14 @@
 </head>
 <body>
     
-    <a href="{{ url_for('index') }}">← Back to Transactions</a>
+    <div class="top-bar">
+        <a href="{{ url_for('index') }}">← Back to Transactions</a>
+        · Logged in as <strong>{{ current_user.username }}</strong>
+        · <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
 
     <div class="dashboard-container">
         <h1>Finance Dashboard</h1>
