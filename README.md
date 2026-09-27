@@ -1,6 +1,6 @@
-# pyFMgr: Personal Finance Manager
+# pyFinanceAI
 
-pyFMgr is a Python-based personal finance manager I built specifically for my own financial needs. It helps me track, analyze, and manage my transactions, supporting single-entry or bulk imports from my bank and credit card statements. I can categorize and edit transactions and view everything through a web dashboard for easy visualization.
+pyFinanceAI is a Python-based personal finance manager I built specifically for my own financial needs. It helps me track, analyze, and manage my transactions, supporting single-entry or bulk imports from my bank and credit card statements. I can categorize and edit transactions and view everything through a web dashboard for easy visualization.
 
 ## Features
 - Import bank and credit card statements (CSV)
